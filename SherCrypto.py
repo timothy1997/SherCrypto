@@ -29,8 +29,6 @@ def encrypt_file(key, keysize, in_filename, out_filename=None, chunksize=64*1024
     # encrypt the file. Larger chunk sizes can be faster for some files and machines.
     # chunksizes must be divisible by 16.
     try:
-        print(in_filename)  # Display the name of the file to be encrypted
-
         if not out_filename:
             out_filename = in_filename + '.enc'
 
@@ -49,17 +47,15 @@ def encrypt_file(key, keysize, in_filename, out_filename=None, chunksize=64*1024
                     chunk = infile.read(chunksize)
                     if len(chunk) == 0:
                         break
-                    elif len(chunk) % keysize != 0:
-                        chunk += ' '.encode('utf-8') * (keysize - len(chunk) % keysize)
+                    elif len(chunk) % 16 != 0:
+                        chunk += ' '.encode('utf-8') * (16 - len(chunk) % 16)
 
                     outfile.write(encryptor.encrypt(chunk))
 
+        print(in_filename) # Print the name of the file that was encrypted
         return out_filename
-    except ValueError:
-        print("Error encrypting input data from: " + in_filename)
-        sys.exit(1)
-    except FileNotFoundError:
-        print("No such file or directory: " + in_filename)
+    except Exception as e:
+        print(e)
         sys.exit(1)
 
 def decrypt_file(key, keysize, in_filename, out_filename=None, chunksize=24*1024):
@@ -68,8 +64,6 @@ def decrypt_file(key, keysize, in_filename, out_filename=None, chunksize=24*1024
     # will be in_filename without its last extension (i.e. if in_filename is
     # 'aaa.zip.enc' then out_filename will be 'aaa.zip')
     try:
-        print(in_filename)  # Print the name of the file to be decrypted
-
         if not out_filename:
             out_filename = os.path.splitext(in_filename)[0]
 
@@ -87,12 +81,10 @@ def decrypt_file(key, keysize, in_filename, out_filename=None, chunksize=24*1024
 
                 outfile.truncate(origsize)
 
+        print(in_filename) # Print the name of the file that was decrypted
         return out_filename
-    except ValueError:
-        print("Error decrypting input data from: " + in_filename)
-        sys.exit(1)
-    except FileNotFoundError:
-        print("No such file or directory: " + in_filename)
+    except Exception as e:
+        print(e)
         sys.exit(1)
 
 def crypto(path, key):
@@ -150,18 +142,16 @@ def main():
                         break
                 removeStr = removeStr[::-1]
                 nPath = path.replace(removeStr,'')
-                newFile = nPath + newFile
+                #newFile = nPath + newFile
                 if os.path.isdir(path):
                     shutil.copytree(args.file_path, args.output_path + '/' + removeStr)
                 else:
                     if args.save_original:
-                        shutil.copytree(newFile, args.output_path + nPath)
+                        shutil.copy(newFile, args.output_path)
                     else:
                         shutil.move(newFile, args.output_path)  # Need to check this case, cause I don't think it will work because of newFile
         else:   # Otherwise, just move the file/directory to output_path
                 shutil.move(args.file_path, args.output_path)
 
 if __name__ == "__main__":
-    print('Not in main yet.')
-    print('Still not in main...')
     main()
