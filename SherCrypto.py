@@ -162,4 +162,6 @@ def main():
                 shutil.move(args.file_path, args.output_path)
 
 if __name__ == "__main__":
+    print('Not in main yet.')
+    print('Still not in main...')
     main()
