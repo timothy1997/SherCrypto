@@ -14,7 +14,7 @@ parser.add_argument('-o', '--output_path', help='Specifies the path where the en
 parser.add_argument('-s', '--save_original', help='Specifies that if an output_path was specified, the input_path will not be removed (removed by default).', action='store_true')
 parser.add_argument('-k', '--key_size', help='Specifies the size of the key being used. 128 bit is default,', choices=[128, 192, 256], type=int)
 parser.add_argument('-d', '--decrypt', help='Specifies decryption should be performed (encrypts by default).', action='store_true')
-parser.add_argument('-n', '--no_removal', help='Specifies that the file that was encrypted/decrypted should not be removed.', action='store_true')
+parser.add_argument('-n', '--no_removal', help='Specifies that the file that was encrypted/decrypted should not be removed after encryption/decryption.', action='store_true')
 # Other options I may want to specify for the future:
 #   The type of encryption algorithm used (AES/RSA)
 #   Name all files being encrypted/specify a naming scheme.
@@ -93,7 +93,7 @@ def crypto(path, key):
         for filename in os.listdir(path):
             fullPath = path + '/' + filename
             if os.path.isdir(fullPath): # If the file within the directory is a directory...
-                cryptoFile(fullPath, key) # Iterate through all files in that directory
+                crypto(fullPath, key) # Iterate through all files in that directory
             else:   # Otherwise, encrypt or decrypt the files within the directory
                 if args.decrypt:
                     decrypt_file(key, len(key), fullPath)
