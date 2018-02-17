@@ -21,6 +21,7 @@ parser.add_argument('-k', '--key_size', help='Specifies the size of the key bein
 args = parser.parse_args()  # Get the command line arguments the user specified
 
 def main():
+    print('This is a change made.')
     # Get the input path, key, and other necessary data
     key = crypto.getKey(args.key_path, args.key_size)
     inputPath = args.input_path
